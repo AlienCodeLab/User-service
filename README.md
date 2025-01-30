@@ -24,5 +24,5 @@ A Spring Boot-based microservice for managing users, authentication, and authori
 
 ### **1️⃣ Clone the Repository**
 ```sh
-git clone https://github.com/ChattySmartBot/user-service.git
+git clone https://github.com/AlienCodeLab/User-service.git
 cd user-service

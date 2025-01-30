@@ -2,10 +2,12 @@ spring:
   application:
     name: user-service
   datasource:
-    url: jdbc:mysql://localhost:3306/user_db
-    username: root
-    password: root
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/user_db}
+    username: ${SPRING_DATASOURCE_USERNAME:user-db-username}
+    password: ${SPRING_DATASOURCE_PASSWORD:user-db-password}
+    driver-class-name: ${DRIVER_CLASS_NAME}
 
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.xml
+    enabled: true
+    contexts: dev,test

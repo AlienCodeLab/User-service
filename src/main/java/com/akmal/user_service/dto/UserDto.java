@@ -2,14 +2,11 @@ package com.akmal.user_service.dto;
 
 import lombok.*;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
 @Builder
+@Value
 public class UserDto {
-    private Long id;
-    private String username;
-    private String email;
-    private String role; // Avoid exposing Role as ENUM directly
+    Long id;
+    String username;
+    String email;
+    String role; // Avoid exposing Role as ENUM directly
 }

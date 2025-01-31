@@ -4,6 +4,7 @@ import com.akmal.user_service.dto.UserDto;
 import com.akmal.user_service.entity.Role;
 import com.akmal.user_service.entity.UserEntity;
 import com.akmal.user_service.exception.UserNotFoundException;
+import com.akmal.user_service.mapper.UserMapper;
 import com.akmal.user_service.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,17 +20,18 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserKafkaProducer kafkaProducer;
+    private final UserMapper mapper;
     public List<UserDto> getAllUsers() {
         return userRepository.findAll()
                 .stream()
-                .map(this::convertToDto)
+                .map(mapper::toDto)
                 .collect(Collectors.toList());
     }
 
     public UserDto getUserById(Long id) {
         UserEntity user = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
-        return convertToDto(user);
+        return mapper.toDto(user);
     }
 
     public UserDto createUser(UserDto userDto) {
@@ -45,7 +47,7 @@ public class UserService {
 
         UserEntity savedUser = userRepository.save(user);
         kafkaProducer.sendUserEvent("User created: " + userDto.getUsername());
-        return convertToDto(savedUser);
+        return mapper.toDto(savedUser);
     }
 
     public UserDto updateUser(Long id, UserDto userDto) {
@@ -56,7 +58,7 @@ public class UserService {
         user.setEmail(userDto.getEmail());
         UserEntity updatedUser = userRepository.save(user);
 
-        return convertToDto(updatedUser);
+        return mapper.toDto(updatedUser);
     }
 
     public void deleteUser(Long id) {
@@ -64,14 +66,5 @@ public class UserService {
             throw new UserNotFoundException("User not found");
         }
         userRepository.deleteById(id);
-    }
-
-    private UserDto convertToDto(UserEntity user) {
-        return UserDto.builder()
-                .id(user.getId())
-                .username(user.getUsername())
-                .email(user.getEmail())
-                .role(user.getRole().name())
-                .build();
     }
 }

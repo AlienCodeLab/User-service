@@ -26,3 +26,4 @@ A Spring Boot-based microservice for managing users, authentication, and authori
 ```sh
 git clone https://github.com/AlienCodeLab/User-service.git
 cd user-service
+docker compose up --build

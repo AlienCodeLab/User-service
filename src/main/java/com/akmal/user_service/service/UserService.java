@@ -18,7 +18,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-
+    private final UserKafkaProducer kafkaProducer;
     public List<UserDto> getAllUsers() {
         return userRepository.findAll()
                 .stream()
@@ -36,7 +36,6 @@ public class UserService {
         if (userRepository.findByEmail(userDto.getEmail()).isPresent()) {
             throw new IllegalStateException("Email already in use");
         }
-
         UserEntity user = UserEntity.builder()
                 .username(userDto.getUsername())
                 .email(userDto.getEmail())
@@ -45,6 +44,7 @@ public class UserService {
                 .build();
 
         UserEntity savedUser = userRepository.save(user);
+        kafkaProducer.sendUserEvent("User created: " + userDto.getUsername());
         return convertToDto(savedUser);
     }
 

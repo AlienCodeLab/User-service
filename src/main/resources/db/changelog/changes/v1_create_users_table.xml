@@ -5,7 +5,13 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.8.xsd">
 
-    <changeSet id="1" author="your-name">
+    <changeSet id="1" author="akhash">
+        <sql>
+            CREATE TYPE role AS ENUM ('USER', 'ADMIN');
+        </sql>
+    </changeSet>
+
+    <changeSet id="2" author="akhash">
         <createTable tableName="users">
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false" />
@@ -17,6 +23,9 @@
                 <constraints unique="true" nullable="false" />
             </column>
             <column name="password" type="VARCHAR(255)" />
+            <column name="role" type="role">
+                <constraints nullable="false" />
+            </column>
             <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP" />
             <column name="updated_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
                 <constraints nullable="false" />
